@@ -39,6 +39,7 @@ dependencies:
   fluttericon:
   speech_to_text:
   avatar_glow:
+  text_to_speech: ^0.2.3
 
 dev_dependencies:
   flutter_test:
