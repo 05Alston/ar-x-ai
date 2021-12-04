@@ -35,6 +35,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.4
   arcore_flutter_plugin: ^0.1.0-null-safety.3
+  custom_navigation_bar:
+  fluttericon:
+  speech_to_text:
+  avatar_glow:
 
 dev_dependencies:
   flutter_test:
