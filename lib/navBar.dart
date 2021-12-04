@@ -1,8 +1,8 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_ar/tts.dart';
-import 'package:flutter_app_ar/arScreen.dart';
-import 'package:flutter_app_ar/stt.dart';
+import 'tts.dart';
+import 'arScreen.dart';
+import 'stt.dart';
 import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/linearicons_free_icons.dart';
 import 'package:fluttericon/linecons_icons.dart';

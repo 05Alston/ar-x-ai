@@ -27,7 +27,7 @@ class SpeechScreen extends StatefulWidget {
 }
 
 class _SpeechScreenState extends State<SpeechScreen> {
-  var _speech = stt.SpeechToText();
+  late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Press button and start speaking';
   double _confidence = 1.0;
@@ -54,7 +54,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
             repeatPauseDuration: Duration(milliseconds: 100),
             repeat: true,
             child: FloatingActionButton(
-              onPressed: _Listen,
+              onPressed: !_isListening? Listen: stopListen,
               child: Icon(_isListening ? Icons.mic : Icons.mic_none),
             ),
           ),
@@ -64,7 +64,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
             padding: EdgeInsets.all(30.0),
             child: Text(_text,
                 style: TextStyle(
-                  fontSize: 32.0,
+                  fontSize: 24.0,
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
                 )),
@@ -72,7 +72,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
         ));
   }
 
-  void _Listen() async {
+  void Listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (val) => print("Status: $val"),
@@ -80,7 +80,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
       );
       if (available) {
         setState(() => _isListening = true);
-        _speech.listen(
+        await _speech.listen(
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
             if (val.hasConfidenceRating && val.confidence > 0)
@@ -88,9 +88,11 @@ class _SpeechScreenState extends State<SpeechScreen> {
           }),
         );
       }
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
     }
+  }
+
+  void stopListen() async{
+    await _speech.stop();
+    setState(() => _isListening = false);
   }
 }
