@@ -33,20 +33,23 @@ class _TypeScreenState extends State<TypeScreen> {
   double volume = 1; // Range: 0-1
   double rate = 1.0; // Range: 0-2
   double pitch = 1.0; // Range: 0-2
-
   String? language;
   String? languageCode;
+  String? voice;
   List<String> languages = <String>[];
   List<String> languageCodes = <String>[];
-  String? voice;
+  TextEditingController textEditingController = TextEditingController();
 
-  Future<String?> getVoiceByLang(String lang) async {
-    final List<String>? voices = await _textToSpeech.getVoiceByLang(languageCode!);
-    if (voices != null && voices.isNotEmpty) {
-      return voices.first;
-    }
-    return null;
+  @override
+  void initState() {
+    super.initState();
+    textEditingController.text = text;
+    _textToSpeech = tts.TextToSpeech();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      initLanguages();
+    });
   }
+
   Future<void> initLanguages() async {
     /// populate lang code (i.e. en-US)
     languageCodes = await _textToSpeech.getLanguages();
@@ -68,7 +71,7 @@ class _TypeScreenState extends State<TypeScreen> {
     } else {
       languageCode = defaultLanguage;
     }
-    language = await _textToSpeech  .getDisplayLanguageByCode(languageCode!);
+    language = await _textToSpeech.getDisplayLanguageByCode(languageCode!);
 
     /// get voice
     voice = await getVoiceByLang(languageCode!);
@@ -78,13 +81,12 @@ class _TypeScreenState extends State<TypeScreen> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _textToSpeech = tts.TextToSpeech();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      initLanguages();
-    });
+  Future<String?> getVoiceByLang(String lang) async {
+    final List<String>? voices = await _textToSpeech.getVoiceByLang(languageCode!);
+    if (voices != null && voices.isNotEmpty) {
+      return voices.first;
+    }
+    return null;
   }
   @override
   Widget build(BuildContext context) {
@@ -93,7 +95,6 @@ class _TypeScreenState extends State<TypeScreen> {
         title: Text("Text-To-Speech Screen"),
       ),
       body: SingleChildScrollView(
-        reverse: true,
         child: Column(
           children: [
             TextField(
@@ -173,7 +174,7 @@ class _TypeScreenState extends State<TypeScreen> {
                 ),
                 DropdownButton<String>(
                   value: language,
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: const Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
                   style: const TextStyle(color: Colors.deepPurple),
@@ -183,33 +184,20 @@ class _TypeScreenState extends State<TypeScreen> {
                   ),
                   onChanged: (String? newValue) async {
                     languageCode =
-                        await _textToSpeech.getLanguageCodeByName(newValue!);
-                    voice = (await _textToSpeech.getVoiceByLang(languageCode!))
-                        as String?;
+                    await _textToSpeech.getLanguageCodeByName(newValue!);
+                    voice = await getVoiceByLang(languageCode!);
                     setState(() {
                       language = newValue;
                     });
                   },
-                  items:
-                      languages.map<DropdownMenuItem<String>>((String value) {
+                  items: languages
+                      .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
                     );
                   }).toList(),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: <Widget>[
-                const Text('Voice'),
-                const SizedBox(
-                  width: 20,
-                ),
-                Text(voice ?? '-'),
               ],
             ),
             const SizedBox(
@@ -233,9 +221,7 @@ class _TypeScreenState extends State<TypeScreen> {
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: ElevatedButton(
                       child: const Text('Speak'),
-                      onPressed: () {
-                        _speak();
-                      },
+                      onPressed: _speak,
                     ),
                   ),
                 ),

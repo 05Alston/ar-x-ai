@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'tts.dart';
 import 'arScreen.dart';
 import 'stt.dart';
-import 'package:fluttericon/entypo_icons.dart';
 import 'package:fluttericon/linearicons_free_icons.dart';
-import 'package:fluttericon/linecons_icons.dart';
+
 
 
 class NavBar extends StatefulWidget {
@@ -51,21 +50,21 @@ class _NavBarState extends State<NavBar> {
               "AR Camera",
               style: TextStyle(color: Colors.grey[500]),
             ),
-            icon: Icon(Entypo.camera),
+            icon: Icon(LineariconsFree.camera),
           ),
           CustomNavigationBarItem(
             selectedTitle: Text(
               "Speech To Text",
               style: TextStyle(color: Colors.grey[500]),
             ),
-            icon: Icon(Entypo.mic),
+            icon: Icon(LineariconsFree.mic),
           ),
           CustomNavigationBarItem(
             selectedTitle: Text(
               "Text To Speech",
               style: TextStyle(color: Colors.grey[500]),
             ),
-            icon: Icon(Entypo.keyboard),
+            icon: Icon(LineariconsFree.keyboard),
           ),
         ],
       ),

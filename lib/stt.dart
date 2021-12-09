@@ -30,10 +30,9 @@ class _SpeechScreenState extends State<SpeechScreen> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Press button and start speaking';
-  double _confidence = 1.0;
+  double _confidence = 1.0; 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _speech = stt.SpeechToText();
   }
@@ -54,7 +53,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
             repeatPauseDuration: Duration(milliseconds: 100),
             repeat: true,
             child: FloatingActionButton(
-              onPressed: !_isListening? Listen: stopListen,
+              onPressed:!_isListening ? _listen : _stopListen,
               child: Icon(_isListening ? Icons.mic : Icons.mic_none),
             ),
           ),
@@ -72,7 +71,7 @@ class _SpeechScreenState extends State<SpeechScreen> {
         ));
   }
 
-  void Listen() async {
+  void _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (val) => print("Status: $val"),
@@ -90,9 +89,8 @@ class _SpeechScreenState extends State<SpeechScreen> {
       }
     }
   }
-
-  void stopListen() async{
+  void _stopListen () async{
     await _speech.stop();
-    setState(() => _isListening = false);
+      setState(() => _isListening = false);
   }
 }
