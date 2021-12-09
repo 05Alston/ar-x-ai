@@ -15,7 +15,7 @@
         </intent>
     </queries>
    <application
-        android:label="flutter_app_ar"
+        android:label="ar_x_ai"
         android:icon="@mipmap/ic_launcher">
 
         <activity

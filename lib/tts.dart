@@ -205,6 +205,18 @@ class _TypeScreenState extends State<TypeScreen> {
             ),
             Row(
               children: <Widget>[
+                const Text('Voice'),
+                const SizedBox(
+                  width: 47,
+                ),
+                Text(voice ?? '-'),
+              ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Row(
+              children: <Widget>[
                 Expanded(
                   child: Container(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
