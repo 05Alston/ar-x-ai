@@ -11,7 +11,7 @@ class ArScreen extends StatefulWidget {
 }
 
 class _ArScreenState extends State<ArScreen> {
-  late ArCoreController arCoreController;
+  late ArCoreController _arCoreController;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,9 @@ class _ArScreenState extends State<ArScreen> {
   }
 
   void _onArCoreViewCreated(ArCoreController controller) {
-    arCoreController = controller;
-    _addCuboid(arCoreController);
+    _arCoreController = controller;
+    _addCube(_arCoreController);
+    // _addSphere(arCoreController);
   }
 
   // void _addSphere(ArCoreController controller) {
@@ -47,31 +48,14 @@ class _ArScreenState extends State<ArScreen> {
   //   controller.addArCoreNode(node);
   // }
 
-  // void _addCylindre(ArCoreController controller) {
-  //   final material = ArCoreMaterial(
-  //     color: Colors.red,
-  //     reflectance: 1.0,
-  //   );
-  //   final cylindre = ArCoreCylinder(
-  //     materials: [material],
-  //     radius: 0.5,
-  //     height: 0.3,
-  //   );
-  //   final node = ArCoreNode(
-  //     shape: cylindre,
-  //     position: vector.Vector3(0.0, -0.5, -2.0),
-  //   );
-  //   controller.addArCoreNode(node);
-  // }
-
   void _addCube(ArCoreController controller) {
     final material = ArCoreMaterial(
-      color: Color.fromARGB(120, 66, 134, 244),
+      color: Color.fromARGB(200, 209, 213, 219),
       metallic: 1.0,
     );
     final cube = ArCoreCube(
       materials: [material],
-      size: vector.Vector3(0.5, 0.5, 0.5),
+      size: vector.Vector3(1, 1, 1),
     );
     final node = ArCoreNode(
       shape: cube,
@@ -79,26 +63,10 @@ class _ArScreenState extends State<ArScreen> {
     );
     controller.addArCoreNode(node);
   }
-  void _addCuboid(ArCoreController controller) {
-    final material = ArCoreMaterial(
-      color: Color.fromARGB(200, 209, 213, 219),
-      metallic: 1.0,
-    );
-
-    final cuboid = ArCoreCube(
-      materials: [material],
-      size: vector.Vector3(0.5, 0.5, 0.05),
-    );
-    final node = ArCoreNode(
-      shape: cuboid,
-      position: vector.Vector3(0, 0, -1.5),
-    );
-    controller.addArCoreNode(node);
-  }
 
   @override
   void dispose() {
-    arCoreController.dispose();
+    _arCoreController.dispose();
     super.dispose();
   }
 }

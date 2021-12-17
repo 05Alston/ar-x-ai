@@ -30,11 +30,13 @@ class _SpeechScreenState extends State<SpeechScreen> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = 'Press button and start speaking';
-  double _confidence = 1.0; 
+  double _confidence = 1.0;
+
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+
   }
 
   @override

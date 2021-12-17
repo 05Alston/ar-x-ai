@@ -27,23 +27,23 @@ class TypeScreen extends StatefulWidget {
 }
 
 class _TypeScreenState extends State<TypeScreen> {
-  String defaultLanguage = 'en-US';
+  String _defaultLanguage = 'en-US';
   late tts.TextToSpeech _textToSpeech;
-  String text = '';
-  double volume = 1; // Range: 0-1
-  double rate = 1.0; // Range: 0-2
-  double pitch = 1.0; // Range: 0-2
-  String? language;
-  String? languageCode;
-  String? voice;
-  List<String> languages = <String>[];
-  List<String> languageCodes = <String>[];
-  TextEditingController textEditingController = TextEditingController();
+  String _text = '';
+  double _volume = 1; // Range: 0-1
+  double _rate = 1.0; // Range: 0-2
+  double _pitch = 1.0; // Range: 0-2
+  String? _language;
+  String? _languageCode;
+  String? _voice;
+  List<String> _languages = <String>[];
+  List<String> _languageCodes = <String>[];
+  TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    textEditingController.text = text;
+    _textEditingController.text = _text;
     _textToSpeech = tts.TextToSpeech();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       initLanguages();
@@ -52,7 +52,7 @@ class _TypeScreenState extends State<TypeScreen> {
 
   Future<void> initLanguages() async {
     /// populate lang code (i.e. en-US)
-    languageCodes = await _textToSpeech.getLanguages();
+    _languageCodes = await _textToSpeech.getLanguages();
 
     /// populate displayed language (i.e. English)
     final List<String>? displayLanguages = await _textToSpeech.getDisplayLanguages();
@@ -60,21 +60,22 @@ class _TypeScreenState extends State<TypeScreen> {
       return;
     }
 
-    languages.clear();
+    _languages.clear();
     for (final dynamic lang in displayLanguages) {
-      languages.add(lang as String);
+      _languages.add(lang as String);  // for each loop
     }
 
     final String? defaultLangCode = await _textToSpeech.getDefaultLanguage();
-    if (defaultLangCode != null && languageCodes.contains(defaultLangCode)) {
-      languageCode = defaultLangCode;
+    if (defaultLangCode != null && _languageCodes.contains(defaultLangCode)) {
+      _languageCode = defaultLangCode;
     } else {
-      languageCode = defaultLanguage;
+      _languageCode = _defaultLanguage;
     }
-    language = await _textToSpeech.getDisplayLanguageByCode(languageCode!);
+    _language = await _textToSpeech.getDisplayLanguageByCode(_languageCode!);//
+    // en-us => English
 
     /// get voice
-    voice = await getVoiceByLang(languageCode!);
+    _voice = await getVoiceByLang(_languageCode!);
 
     if (mounted) {
       setState(() {});
@@ -82,7 +83,7 @@ class _TypeScreenState extends State<TypeScreen> {
   }
 
   Future<String?> getVoiceByLang(String lang) async {
-    final List<String>? voices = await _textToSpeech.getVoiceByLang(languageCode!);
+    final List<String>? voices = await _textToSpeech.getVoiceByLang(_languageCode!);
     if (voices != null && voices.isNotEmpty) {
       return voices.first;
     }
@@ -104,7 +105,7 @@ class _TypeScreenState extends State<TypeScreen> {
                   hintText: 'Enter some text here...'),
               onChanged: (String newText) {
                 setState(() {
-                  text = newText;
+                  _text = newText;
                 });
               },
             ),
@@ -113,19 +114,19 @@ class _TypeScreenState extends State<TypeScreen> {
                 const Text('Volume'),
                 Expanded(
                   child: Slider(
-                    value: volume,
+                    value: _volume,
                     min: 0,
                     max: 1,
-                    label: volume.round().toString(),
+                    label: _volume.round().toString(),
                     onChanged: (double value) {
                       initLanguages();
                       setState(() {
-                        volume = value;
+                        _volume = value;
                       });
                     },
                   ),
                 ),
-                Text('(${(volume * 100).toStringAsFixed(2)})'),
+                Text('(${(_volume*100).toStringAsFixed(2)})'),
               ],
             ),
             Row(
@@ -133,18 +134,18 @@ class _TypeScreenState extends State<TypeScreen> {
                 const Text('Rate'),
                 Expanded(
                   child: Slider(
-                    value: rate,
+                    value: _rate,
                     min: 0,
                     max: 2,
-                    label: rate.round().toString(),
+                    label: _rate.round().toString(),
                     onChanged: (double value) {
                       setState(() {
-                        rate = value;
+                        _rate = value;
                       });
                     },
                   ),
                 ),
-                Text('(${rate.toStringAsFixed(2)})'),
+                Text('(${_rate.toStringAsFixed(2)})'),
               ],
             ),
             Row(
@@ -152,18 +153,18 @@ class _TypeScreenState extends State<TypeScreen> {
                 const Text('Pitch'),
                 Expanded(
                   child: Slider(
-                    value: pitch,
+                    value: _pitch,
                     min: 0,
                     max: 2,
-                    label: pitch.round().toString(),
+                    label: _pitch.round().toString(),
                     onChanged: (double value) {
                       setState(() {
-                        pitch = value;
+                        _pitch = value;
                       });
                     },
                   ),
                 ),
-                Text('(${pitch.toStringAsFixed(2)})'),
+                Text('(${_pitch.toStringAsFixed(2)})'),
               ],
             ),
             Row(
@@ -173,7 +174,7 @@ class _TypeScreenState extends State<TypeScreen> {
                   width: 20,
                 ),
                 DropdownButton<String>(
-                  value: language,
+                  value: _language,
                   icon: const Icon(Icons.arrow_downward),
                   iconSize: 24,
                   elevation: 16,
@@ -183,14 +184,14 @@ class _TypeScreenState extends State<TypeScreen> {
                     color: Colors.deepPurpleAccent,
                   ),
                   onChanged: (String? newValue) async {
-                    languageCode =
+                    _languageCode =
                     await _textToSpeech.getLanguageCodeByName(newValue!);
-                    voice = await getVoiceByLang(languageCode!);
+                    _voice = await getVoiceByLang(_languageCode!);
                     setState(() {
-                      language = newValue;
+                      _language = newValue;
                     });
                   },
-                  items: languages
+                  items: _languages
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -209,7 +210,7 @@ class _TypeScreenState extends State<TypeScreen> {
                 const SizedBox(
                   width: 47,
                 ),
-                Text(voice ?? '-'),
+                Text(_voice ?? '-'),
               ],
             ),
             const SizedBox(
@@ -246,12 +247,12 @@ class _TypeScreenState extends State<TypeScreen> {
   }
 
   void _speak() {
-    _textToSpeech.setVolume(volume);
-    _textToSpeech.setRate(rate);
-    if (languageCode != null) {
-      _textToSpeech.setLanguage(languageCode!);
+    _textToSpeech.setVolume(_volume);
+    _textToSpeech.setRate(_rate);
+    if (_languageCode != null) {
+      _textToSpeech.setLanguage(_languageCode!);
     }
-    _textToSpeech.setPitch(pitch);
-    _textToSpeech.speak(text);
+    _textToSpeech.setPitch(_pitch);
+    _textToSpeech.speak(_text);
   }
 }
